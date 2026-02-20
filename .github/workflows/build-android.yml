@@ -108,7 +108,7 @@ jobs:
         $env:VS_NdkRoot="C:\Android\android-sdk\android-ndk-r23c"
         $env:VS_AntHome="C:\Android\android-sdk\apache-ant-1.9.7"
         $env:VS_JavaHome="C:\Android\android-sdk\jdk8u302-b08"
-        MSBuild.exe /p:Configuration=Release /p:Platform="ARM" /p:BUILD_REVISION=${{github.run_number}}
+        MSBuild.exe /p:Configuration=Release /p:Platform="ARM64" /p:BUILD_REVISION=${{github.run_number}}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
