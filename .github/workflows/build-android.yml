@@ -110,8 +110,19 @@ jobs:
         $env:VS_JavaHome="C:\Android\android-sdk\jdk8u302-b08"
         MSBuild.exe /p:Configuration=Release /p:Platform="ARM64" /p:BUILD_REVISION=${{github.run_number}}
 
+    - name: Verify APK exists and size
+      run: |
+        dir android\otclientv8\ARM64\Release
+        powershell -Command "Get-Item android\otclientv8\ARM64\Release\otclientv8.apk | Format-List Name,Length,LastWriteTime"
+
+    - name: Verify data.zip
+      run: |
+        dir android\otclientv8\assets
+        powershell -Command "Get-Item android\otclientv8\assets\data.zip | Format-List Name,Length,LastWriteTime"
+
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
         name: otclientv8-android-arm64-${{ github.sha }}
-        path: android/otclientv8/ARM64/Release/otclientv8.apk
+        path: android/otclientv8/ARM64/Release/*.apk
+        if-no-files-found: error
