@@ -5,17 +5,17 @@ DEFAULT_LAYOUT = "retro" -- on android it's forced to "mobile", check code bello
 
 -- If you don't use updater or other service, set it to updater = ""
 Services = {
-  website = "https://docs.opentibiabr.com/",
+  website = "https://valmor.pl/",
   updater = "",--"http://yourwebsite/api/updater.php"
   stats = "", -- --"http://yourwebsite/api/stats.php"
   crash = "", --"http://yourwebsite/api/crash.php",
   feedback = "",--"http://yourwebsite/api/feedback.php",
-  status = "http://docs.opentibiabr.com" --http://yourwebsite/api/status.php"
+  status = "https://valmor.pl" --http://yourwebsite/api/status.php"
 }
 
 -- Servers accept http login url, websocket login url or ip:port:version
 Servers = {
-  LocalTestServ = "127.0.0.1:7171:1100"
+  ValmorOTS = "valmor.pl:7171:772"
 }
 
 --Server = "ws://yourwebsite:3000/"
@@ -23,7 +23,7 @@ Servers = {
 --USE_NEW_ENERGAME = true -- uses entergamev2 based on websockets instead of entergame
 ALLOW_CUSTOM_SERVERS = true -- if true it shows option ANOTHER on server list
 
-g_app.setName("OTCv8")
+g_app.setName("ValmorOTS")
 -- CONFIG END
 
 -- print first terminal message
