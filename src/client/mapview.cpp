@@ -118,9 +118,16 @@ void MapView::drawMapBackground(const Rect& rect, const TilePtr& crosshairTile) 
         m_minimumAmbientLight = 0.05f;
     }
 
-    Rect srcRect = calcFramebufferSource(rect.size());
-    g_drawQueue->setFrameBuffer(rect, m_optimizedSize, srcRect);
+// src/client/mapview.cpp
 
+Rect srcRect = calcFramebufferSource(rect.size());
+
+// Android: wyłącz mapowy framebuffer (powoduje czarne obszary / znikające sprite'y)
+#ifndef ANDROID
+g_drawQueue->setFrameBuffer(rect, m_optimizedSize, srcRect);
+#else
+// nic – mapa będzie renderowana bezpośrednio
+#endif
     if (m_drawLight) {
         Light ambientLight;
         if (cameraPosition.z <= Otc::SEA_FLOOR)
