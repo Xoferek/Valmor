@@ -260,33 +260,15 @@ void GraphicalApplication::run()
         }
 
 
-if (toDrawMapQueue) {
+        if (toDrawMapQueue && toDrawMapQueue->hasFrameBuffer()) {
+            AutoStat s(STATS_RENDER, "UpdateMap");
+            m_mapFramebuffer->resize(toDrawMapQueue->getFrameBufferSize());
+            m_mapFramebuffer->bind();
+            g_painter->clear(Color::black);
+            toDrawMapQueue->draw(DRAW_ALL);
+            m_mapFramebuffer->release();
+        }
 
-#ifdef ANDROID
-    // ANDROID: pomijamy map-FBO, bo powoduje czarne obszary / znikające sprite'y.
-    // Rysujemy mapę bezpośrednio z kolejki.
-toDrawMapQueue->draw(DRAW_BEFORE_MAP);
-// tutaj MUSI być realne rysowanie mapy (to co normalnie leci do FBO)
-toDrawMapQueue->draw(DRAW_AFTER_MAP);
-#else
-    if (toDrawMapQueue->hasFrameBuffer()) {
-        m_mapFramebuffer->resize(toDrawMapQueue->getFrameBufferSize());
-        m_mapFramebuffer->bind();
-
-        // narysuj mapę do FBO
-        toDrawMapQueue->draw(DrawQueue::MAP);
-
-        m_mapFramebuffer->release();
-
-        // wyświetl zawartość FBO na ekranie
-        m_mapFramebuffer->draw(toDrawMapQueue->getFrameBufferDest(),
-                               toDrawMapQueue->getFrameBufferSrc());
-    } else {
-        // fallback (gdyby kiedyś było bez FBO)
-        toDrawMapQueue->draw(DrawQueue::MAP);
-    }
-#endif
-}
 
         {
             AutoStat s(STATS_RENDER, "Clear");
@@ -300,11 +282,11 @@ toDrawMapQueue->draw(DRAW_AFTER_MAP);
         }
 
         if(toDrawMapQueue) {
-            #ifdef ANDROID
+            
 isOnline = true;
-#else
+
 isOnline = toDrawMapQueue->hasFrameBuffer();
-#endif
+
             if(isOnline) {
                 AutoStat s(STATS_RENDER, "DrawMapBackground");
                 PainterShaderProgramPtr shader = nullptr;
