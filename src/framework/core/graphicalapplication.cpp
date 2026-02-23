@@ -258,6 +258,7 @@ void GraphicalApplication::run()
             m_framebuffer->resize(g_painter->getResolution());
             m_framebuffer->bind();
         }
+#ifndef ANDROID
 
         if (toDrawMapQueue && toDrawMapQueue->hasFrameBuffer()) {
             AutoStat s(STATS_RENDER, "UpdateMap");
@@ -267,7 +268,8 @@ void GraphicalApplication::run()
             toDrawMapQueue->draw(DRAW_ALL);
             m_mapFramebuffer->release();
         }
-
+#else
+#endif
         {
             AutoStat s(STATS_RENDER, "Clear");
             g_painter->clear(Color::alpha);
