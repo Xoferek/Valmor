@@ -203,13 +203,21 @@ void DrawQueue::setFrameBuffer(const Rect& dest, const Size& size, const Rect& s
     m_frameBufferSize = size;
     m_frameBufferDest = dest;
     m_frameBufferSrc = src;
+
+#ifdef ANDROID
+    const uint32_t kBase = 512; // jeśli nadal czernieje -> 512
+#else
+    const uint32_t kBase = 2048;
+#endif
+
     size_t max_size = std::max<int>(m_frameBufferSize.width(), m_frameBufferSize.height());
-    while(max_size > 2048u) {
+    while (max_size > kBase) {
         max_size /= 2;
         m_scaling /= 2.f;
     }
+
     if (m_scaling < 0.99f) {
-        m_frameBufferSize = Size(2048, 2048);
+        m_frameBufferSize = Size(kBase, kBase);
         m_frameBufferSrc = m_frameBufferSrc * m_scaling;
     }
 }
