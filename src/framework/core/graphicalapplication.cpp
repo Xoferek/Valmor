@@ -265,7 +265,9 @@ if (toDrawMapQueue) {
 #ifdef ANDROID
     // ANDROID: pomijamy map-FBO, bo powoduje czarne obszary / znikające sprite'y.
     // Rysujemy mapę bezpośrednio z kolejki.
-    toDrawMapQueue->draw(DrawQueue::MAP);
+toDrawMapQueue->draw(DRAW_BEFORE_MAP);
+// tutaj MUSI być realne rysowanie mapy (to co normalnie leci do FBO)
+toDrawMapQueue->draw(DRAW_AFTER_MAP);
 #else
     if (toDrawMapQueue->hasFrameBuffer()) {
         m_mapFramebuffer->resize(toDrawMapQueue->getFrameBufferSize());
