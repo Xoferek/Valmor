@@ -200,16 +200,26 @@ void DrawQueueConditionMark::end(DrawQueue* queue)
 void DrawQueue::setFrameBuffer(const Rect& dest, const Size& size, const Rect& src)
 {
     m_useFrameBuffer = true;
-    m_frameBufferSize = size;
     m_frameBufferDest = dest;
-    m_frameBufferSrc = src;
-    size_t max_size = std::max<int>(m_frameBufferSize.width(), m_frameBufferSize.height());
-    while(max_size > 2048u) {
-        max_size /= 2;
-        m_scaling /= 2.f;
+    m_frameBufferSrc  = src;
+
+    // IMPORTANT: reset per-call (inaczej scaling kumuluje się i wszystko się psuje)
+    m_scaling = 1.f;
+
+    // licz scaling tak, żeby największy wymiar zmieścił się w 2048
+    const float maxDim = static_cast<float>(std::max(size.width(), size.height()));
+    if (maxDim > 2048.f) {
+        m_scaling = 2048.f / maxDim;
     }
-    if (m_scaling < 0.99f) {
-        m_frameBufferSize = Size(2048, 2048);
+
+    // FBO size zachowuje proporcje, nie kwadrat!
+    const int fbw = std::max(1, static_cast<int>(std::ceil(size.width()  * m_scaling)));
+    const int fbh = std::max(1, static_cast<int>(std::ceil(size.height() * m_scaling)));
+
+    m_frameBufferSize = Size(fbw, fbh);
+
+    // src też skalujemy tym samym współczynnikiem
+    if (m_scaling < 0.999f) {
         m_frameBufferSrc = m_frameBufferSrc * m_scaling;
     }
 }
